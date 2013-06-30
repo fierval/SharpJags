@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpJags", "SharpJags.csproj", "{88F13C5C-5EBC-462B-B793-93349030CCFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "..\Test\Test.csproj", "{1FF9B9B4-5932-4A58-B66C-1C46B896C5B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88F13C5C-5EBC-462B-B793-93349030CCFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F13C5C-5EBC-462B-B793-93349030CCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88F13C5C-5EBC-462B-B793-93349030CCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F13C5C-5EBC-462B-B793-93349030CCFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FF9B9B4-5932-4A58-B66C-1C46B896C5B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FF9B9B4-5932-4A58-B66C-1C46B896C5B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FF9B9B4-5932-4A58-B66C-1C46B896C5B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FF9B9B4-5932-4A58-B66C-1C46B896C5B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
