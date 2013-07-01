@@ -2,7 +2,8 @@
 
 namespace SharpJags
 {
-    public class JagsException : Exception
+    [Serializable]
+	public class JagsException : Exception
     {
         public JagsException(String message) : base(message) { }
     }
