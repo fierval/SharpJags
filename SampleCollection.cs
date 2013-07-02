@@ -17,6 +17,7 @@ namespace SharpJags
 		{
 			if(!_sampleDictionary.ContainsKey(key))
 				throw new KeyNotFoundException("Model parameter not found. Be sure to create a monitor for it.");
+			
 			return _sampleDictionary[key] as T;
 		}
 	}

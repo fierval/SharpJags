@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SharpJags
 {
-    public class MCMCParameters
-    {
-        public int Chains { get; set; }
-        public int BurnIn { get; set; }
-        public int SampleCount { get; set; }
-    }
+	public class MCMCParameters
+	{
+		public int Chains { get; set; }
+		public int BurnIn { get; set; }
+		public int SampleCount { get; set; }
+	}
 }

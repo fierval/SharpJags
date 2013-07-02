@@ -12,7 +12,7 @@ namespace SharpJags.Math
         public Double Max { get; private set; }
         public Double Mean { get; private set; }
         public Double Variance { get; private set; }
-        public Double StandardDeviance { get; private set; }
+        public Double StandardDeviation { get; private set; }
 
         public CompositeSampleStatistics(List<ModelChain> chains)
         {
@@ -52,7 +52,7 @@ namespace SharpJags.Math
             Max = maxs.Max();
             Mean = grandMean;
             Variance = grandVariance;
-            StandardDeviance = System.Math.Sqrt(grandVariance);
+            StandardDeviation = System.Math.Sqrt(grandVariance);
         }
     }
 }
