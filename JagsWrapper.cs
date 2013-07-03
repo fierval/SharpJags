@@ -10,7 +10,8 @@ namespace SharpJags
 {
 	public static class JagsWrapper
 	{
-		private const String ScriptFilenameTemplate = "runJags{0}.cmd";
+		private const String ScriptFilenameTemplate = "run{0}.cmd";
+		private const String ModelFilenameTemplate = "{0}.jags";
 		private const String DataFilename = "jagsData";
 		private const String PriorFilename = "jagsPriors.r";
 
@@ -41,13 +42,13 @@ namespace SharpJags
 		{
 			if (run.ModelData != null)
 			{
-				SaveDataFile(run.ModelPath.Directory, run.ModelData.DumpR());
-				SaveDataFile(run.ModelPath.Directory, run.ModelData.DumpMatlab(), ".m");
+				SaveDataFile(run.WorkingDirectory, run.ModelData.DumpR());
+				SaveDataFile(run.WorkingDirectory, run.ModelData.DumpMatlab(), ".m");
 			}
 
 			if (run.ModelPriors != null)
 			{
-				SavePriorsDataFiles(run.ModelPath.Directory, run.ModelPriors.DumpR());
+				SavePriorsDataFiles(run.WorkingDirectory, run.ModelPriors.DumpR());
 			}
 		}
 
@@ -56,7 +57,8 @@ namespace SharpJags
 			var script = new StringBuilder();
 			
 			script.AppendLine(
-				String.Format("model in {0}", run.ModelPath.Name));
+				String.Format("model in {0}", 
+				String.Format(ModelFilenameTemplate, run.ModelDefinition.Name)));
 
 			script.AppendLine(
 				String.Format("data in {0}.r", DataFilename));
@@ -86,7 +88,7 @@ namespace SharpJags
 			script.AppendLine(String.Format("coda *, stem(CODA{0})", currentChain));
 			script.AppendLine();
 
-			SaveJagsScript(run.ModelPath.Directory, currentChain, script.ToString());
+			SaveJagsScript(run.WorkingDirectory, currentChain, script.ToString());
 		}
 
 		public static void JagsTask(JagsRun run, int currentChain)
@@ -95,11 +97,12 @@ namespace SharpJags
 
 			try
 			{
-				if (run.ModelPath.Directory != null)
+				if (run.WorkingDirectory != null)
 					new ProcessRunner(
 						new FileInfo(JagsConfig.Path),
 						new FileInfo(
-							String.Format("{0}/{1}", run.ModelPath.Directory.FullName, String.Format(ScriptFilenameTemplate, currentChain))))
+							String.Format("{0}/{1}", run.WorkingDirectory.FullName, 
+							String.Format(ScriptFilenameTemplate, currentChain))))
 								.Run();
 			}
 			catch (Exception e)
@@ -120,7 +123,7 @@ namespace SharpJags
 
 			Task.WaitAll(tasks.ToArray());
 
-			var data = CodaDataReader.Read(run.ModelPath.Directory, "CODA0index.txt", "CODA{0}chain1.txt", run.Parameters.Chains);
+			var data = CodaDataReader.Read(run.WorkingDirectory as DirectoryInfo, "CODA0index.txt", "CODA{0}chain1.txt", run.Parameters.Chains);
 			
 			return new Parser(data).Parse();
 		}

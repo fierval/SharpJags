@@ -58,6 +58,7 @@
     <Compile Include="Math\Vector.cs" />
     <Compile Include="MatlabDataConverter.cs" />
     <Compile Include="MCMCParameters.cs" />
+    <Compile Include="ModelDefinition.cs" />
     <Compile Include="Processes\ProcessResult.cs" />
     <Compile Include="Processes\ProcessRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
