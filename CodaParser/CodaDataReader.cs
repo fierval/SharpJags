@@ -12,7 +12,7 @@ namespace SharpJags.CodaParser
 			return File.ReadAllLines(path).ToList();
 		}
 
-		public static CodaData Read(DirectoryInfo basePath, String indexFileName, String chainFileNameTemplate, int numChains)
+		public static CodaData Read(FileSystemInfo basePath, String indexFileName, String chainFileNameTemplate, int numChains)
 		{
 			var indexPath = String.Format("{0}/{1}", basePath.FullName, indexFileName);
 			var index = ReadFileLineByLine(indexPath);
@@ -24,10 +24,10 @@ namespace SharpJags.CodaParser
 			}
 
 			return new CodaData
-				{
-					Index = index,
-					Chains = chains
-				};
+			{
+				Index = index,
+				Chains = chains
+			};
 		}
 	}
 

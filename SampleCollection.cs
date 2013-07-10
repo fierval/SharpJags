@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 using SharpJags.CodaParser;
 
 namespace SharpJags
@@ -13,12 +15,25 @@ namespace SharpJags
 			_sampleDictionary = sampleDictionary;
 		}
 
-		public T Get<T>(String key) where T : class, IModelParameter
+		public IList<IModelParameter> All()
 		{
-			if(!_sampleDictionary.ContainsKey(key))
+			return _sampleDictionary
+				.Select(s => s.Value)
+					.ToList();
+		}
+
+		public T Get<T>(JagsMonitor monitor) where T : class, IModelParameter
+		{
+			if (!_sampleDictionary.ContainsKey(monitor.ParameterName))
 				throw new KeyNotFoundException("Model parameter not found. Be sure to create a monitor for it.");
-			
-			return _sampleDictionary[key] as T;
+
+			var parameter = _sampleDictionary[monitor.ParameterName];
+			var returnParameter = parameter as T;
+
+			if(returnParameter == null)
+				throw new InvalidDataException("The model parameter is found, but is not of the specified type. Correct type is: " + parameter.GetType());
+
+			return returnParameter;
 		}
 	}
 }

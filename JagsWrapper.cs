@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SharpJags.CodaParser;
 using SharpJags.Processes;
@@ -17,7 +19,7 @@ namespace SharpJags
 
 		private static void WriteFile(FileSystemInfo path, String data)
 		{
-			File.WriteAllText(path.FullName, data, Encoding.UTF8);
+			File.WriteAllText(path.FullName, data, Encoding.ASCII);
 		}
 		
 		private static void SaveDataFile(FileSystemInfo modelDirectory, String data, String extension = ".r")
@@ -38,8 +40,38 @@ namespace SharpJags
 			WriteFile(scriptPath, script);
 		}
 
+		private static void SaveModelDefinition(FileSystemInfo modelDirectory, ModelDefinition modelDefinition)
+		{
+			var dataPath = new FileInfo(modelDirectory.FullName + "/" + modelDefinition.Name + ".jags");
+			WriteFile(dataPath, SanitizeModelOutput(modelDefinition.Definition));
+		}
+
+		private static string SanitizeModelOutput(string definition)
+		{
+			var numberOfLeadingTabs = 0;
+
+			foreach (var t in definition)
+			{
+				if (t == 9)
+				{
+					numberOfLeadingTabs++;
+					continue;
+				}
+				
+				if(t == 13 || t == 10) continue;
+
+				break;
+			}
+
+			return Regex
+				.Replace(definition, @"\t{" + numberOfLeadingTabs + "}", String.Empty)
+				.Trim();
+		}
+
 		private static void GenerateJagsDataFiles(JagsRun run)
 		{
+			SaveModelDefinition(run.WorkingDirectory, run.ModelDefinition);
+
 			if (run.ModelData != null)
 			{
 				SaveDataFile(run.WorkingDirectory, run.ModelData.DumpR());
@@ -78,8 +110,7 @@ namespace SharpJags
 					String.Format("monitor {0}", monitor.ParameterName));
 				
 				if (monitor.Thin > 0)
-					mStr.Append(
-						String.Format(", thin({0})", monitor.Thin));
+					mStr.Append(String.Format(", thin({0})", monitor.Thin));
 				
 				script.AppendLine(mStr.ToString());
 			}
@@ -91,23 +122,37 @@ namespace SharpJags
 			SaveJagsScript(run.WorkingDirectory, currentChain, script.ToString());
 		}
 
-		public static void JagsTask(JagsRun run, int currentChain)
+		private static void JagsTask(JagsRun run, int currentChain)
 		{
 			GenerateJagsScript(run, currentChain);
 
 			try
 			{
-				if (run.WorkingDirectory != null)
-					new ProcessRunner(
-						new FileInfo(JagsConfig.Path),
-						new FileInfo(
-							String.Format("{0}/{1}", run.WorkingDirectory.FullName, 
-							String.Format(ScriptFilenameTemplate, currentChain))))
-								.Run();
+				if (run.WorkingDirectory == null) return;
+				
+				var result = new ProcessRunner(
+					new FileInfo(
+						String.Format("{0}/{1}", JagsConfig.BinPath, "jags.bat")),
+					new FileInfo(
+						String.Format("{0}/{1}", run.WorkingDirectory.FullName,
+						String.Format(ScriptFilenameTemplate, currentChain))))
+							.Run();
+
+				var isRealErrorSituation =
+					!String.IsNullOrWhiteSpace(result.Errors)
+					&& (new[]
+						{
+							"error", 
+							"failed",
+							"unable"
+						}).Any(s => result.Errors.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) != -1);
+
+				if (isRealErrorSituation)
+					throw new OperationCanceledException("JAGS returned with error: " + result.Errors);
 			}
 			catch (Exception e)
 			{
-				throw new JagsException("JAGS executable not found. Message: " + e.Message);
+				throw new JagsException("JAGS exception. Message: " + e.Message);
 			}
 		}
 
@@ -118,14 +163,14 @@ namespace SharpJags
 			var tasks = new List<Task>();
 			for (var i = 0; i < run.Parameters.Chains; i++)
 			{
-				new Action<int>((currentChain) => tasks.Add(Task.Factory.StartNew(() => JagsTask(run, currentChain))))(i);
+				new Action<int>(currentChain => tasks.Add(Task.Factory.StartNew(() => JagsTask(run, currentChain))))(i);
 			}
 
 			Task.WaitAll(tasks.ToArray());
 
-			var data = CodaDataReader.Read(run.WorkingDirectory as DirectoryInfo, "CODA0index.txt", "CODA{0}chain1.txt", run.Parameters.Chains);
+			var data = CodaDataReader.Read(run.WorkingDirectory, "CODA0index.txt", "CODA{0}chain1.txt", run.Parameters.Chains);
 			
-			return new Parser(data).Parse();
+			return new Parser().Parse(data);
 		}
 	}
 }

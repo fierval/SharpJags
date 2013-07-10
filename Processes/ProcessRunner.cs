@@ -64,16 +64,11 @@ namespace SharpJags.Processes
 
 			_process.WaitForExit();
 
-			if(!String.IsNullOrEmpty(errors) && (
-				errors.IndexOf("error", StringComparison.InvariantCultureIgnoreCase) != -1 || 
-				errors.IndexOf("unable", StringComparison.InvariantCultureIgnoreCase) != -1))
-					throw new ArgumentException(errors);
-
 			return new ProcessResult
-				{
-					Output = result,
-					Errors = errors
-				};
+			{
+				Output = result,
+				Errors = errors
+			};
 		}
 
 		~ProcessRunner()

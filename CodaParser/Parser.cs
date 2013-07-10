@@ -10,19 +10,16 @@ namespace SharpJags.CodaParser
 	public class Parser
 	{
 		private List<String> _parameterIndex; 
-		private readonly List<List<String>> _codaChains;
+		private List<List<String>> _codaChains;
 		
-		public Parser(CodaData data)
-		{
-			_parameterIndex = data.Index;
-			_codaChains = data.Chains;
-		}
-
 		private const String IsMatrix = @"([A-Za-z0-9_]+)\[([0-9]+),([0-9]+)\]$";
 		private const String IsVector = @"([A-Za-z0-9_]+)\[([0-9]+)\]$";
 
-		public SampleCollection Parse()
+		public SampleCollection Parse(CodaData data)
 		{
+			_parameterIndex = data.Index;
+			_codaChains = data.Chains;
+
 			var parameters = new Dictionary<String, IModelParameter>();
 
 			foreach (var t in _parameterIndex)
@@ -51,6 +48,7 @@ namespace SharpJags.CodaParser
 						var param = new ModelParameter();
 						vec.Parameters.Insert(y, param);
 						mat.Vectors.Insert(x, vec);
+						mat.ParameterName = parameterName;
 						parameters.Add(parameterName, mat);
 					}
 					else
@@ -86,6 +84,7 @@ namespace SharpJags.CodaParser
 						var vec = new ModelParameterVector();
 						var param = new ModelParameter();
 						vec.Parameters.Insert(x, param);
+						vec.ParameterName = parameterName;
 						parameters.Add(parameterName, vec);
 					}
 					else
@@ -102,7 +101,12 @@ namespace SharpJags.CodaParser
 					parameterName = parameterIdentifier;
 					if (!parameters.ContainsKey(parameterName))
 					{
-						parameters.Add(parameterName, new ModelParameter());
+						var param = new ModelParameter()
+						{
+							ParameterName = parameterName
+						};
+						
+						parameters.Add(parameterName, param);
 					}
 				}
 
@@ -132,14 +136,17 @@ namespace SharpJags.CodaParser
 					for (var k = startIndex; k < endIndex; k++)
 					{
 						var line = chainLines[k];
-						var sampleChunk = line.Split(new[]{ ' ' }, 5, StringSplitOptions.RemoveEmptyEntries);
+						
+						var sampleChunk = line.Split(
+							new[]{ ' ' }, 5, StringSplitOptions.RemoveEmptyEntries);
+						
 						try
 						{
 							var s = sampleChunk[1];
 							var sample = Double.Parse(s, CultureInfo.InvariantCulture);
 							chain.Samples.Add(sample);
 						}
-						catch (Exception e)
+						catch (Exception)
 						{
 							Debug.WriteLine("Parser failed to parse sample. Skipping.");
 						}

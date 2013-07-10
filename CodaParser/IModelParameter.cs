@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SharpJags.Math;
 
 namespace SharpJags.CodaParser
 {
-    public interface IModelParameter
-    {
-    }
+	public interface IModelParameter
+	{
+		String ParameterName { get; }
+		CompositeSampleStatistics Statistics { get; }
+	}
 }

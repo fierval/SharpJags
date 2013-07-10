@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpJags.Math
 {
@@ -30,18 +27,20 @@ namespace SharpJags.Math
 			Fill(defaultValue);
 		}
 
-		public Vector(List<T> list)
+		public Vector(IEnumerable<T> enumerable)
 		{
+			var list = enumerable.ToList();
+			
+			_backingStorage = list;
 			Length = list.Count;
-			_backingStorage = list.ToList();
 		}
 
 		private void Initialize(int length)
 		{
-			Length = length;
 			_backingStorage = new List<T>();
+			Length = length;
 		}
-        
+
 		private void Fill(T defaultValue)
 		{
 			for (var i = 0; i < Length; i++)

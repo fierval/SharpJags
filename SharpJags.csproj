@@ -47,6 +47,10 @@
     <Compile Include="CodaParser\ModelParameterMatrix.cs" />
     <Compile Include="CodaParser\ModelParameterVector.cs" />
     <Compile Include="CodaParser\Parser.cs" />
+    <Compile Include="Math\Random\DistributionExtensions.cs" />
+    <Compile Include="Math\Random\Gaussian.cs" />
+    <Compile Include="Math\Random\IDistribution.cs" />
+    <Compile Include="Math\Random\Uniform.cs" />
     <Compile Include="Math\SampleStatistics.cs" />
     <Compile Include="JagsConfig.cs" />
     <Compile Include="JagsData.cs" />

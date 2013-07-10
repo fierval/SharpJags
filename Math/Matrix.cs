@@ -56,10 +56,13 @@ namespace SharpJags.Math
 				.ToList());
 		}
 
-		public void Add(Vector<T> vector)
+		public void Add(IEnumerable<T> enumerable)
 		{
+			var vector = new Vector<T>(enumerable);
+			
 			if (Cols == 0)
 				Cols = vector.Length;
+			
 			if(vector.Length != Cols)
 				throw new ArgumentException("Dimension mismatch.");
 			

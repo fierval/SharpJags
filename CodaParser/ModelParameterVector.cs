@@ -1,4 +1,5 @@
-﻿using SharpJags.Math;
+﻿using System;
+using SharpJags.Math;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +7,8 @@ namespace SharpJags.CodaParser
 {
 	public class ModelParameterVector : IModelParameter
 	{
+		public String ParameterName { get; set; }
+		 
 		public readonly List<ModelParameter> Parameters;
 
 		public ModelParameterVector()

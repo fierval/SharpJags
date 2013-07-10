@@ -8,6 +8,7 @@ namespace SharpJags.CodaParser
 	public class ModelParameter : IModelParameter
 	{
 		public String ParameterName { get; set; }
+
 		public readonly List<ModelChain> Chains = new List<ModelChain>();
 
 		public List<Double> Samples
