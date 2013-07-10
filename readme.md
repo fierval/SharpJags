@@ -18,7 +18,7 @@ The library is ready to be experimented with, but bugs must be accounted for. Ch
 
 #### Howto: Perform sampling
 
-```
+``` csharp
 JagsConfig.BinPath = @"C:\Program Files\JAGS\JAGS-3.3.0\x64\bin";
 
 var fooMatrix = new Matrix<double>
