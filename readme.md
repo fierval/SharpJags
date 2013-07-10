@@ -70,10 +70,9 @@ var data = new JagsData
 	{ "delta", delta }
 };
 
-// Default simple linear regression example
 var modelDefintion = new ModelDefinition
 {
-	Name = "LinearRegression",
+	Name = "Gaussians",
 	Definition =
 	@"
 		model {
@@ -90,15 +89,9 @@ var modelDefintion = new ModelDefinition
 	"
 };
 
-var alphaMonitor = new JagsMonitor()
+var yMonitor = new JagsMonitor()
 {
-	ParameterName = "a",
-	Thin = 1
-};
-
-var betaMonitor = new JagsMonitor()
-{
-	ParameterName = "b",
+	ParameterName = "y",
 	Thin = 1
 };
 
@@ -109,8 +102,7 @@ var run = new JagsRun
 	ModelData = data,
 	Monitors = new List<JagsMonitor>
 	{
-		alphaMonitor,
-		betaMonitor
+		yMonitor
 	},
 	Parameters = new MCMCParameters
 	{
@@ -128,17 +120,15 @@ var samples = JagsWrapper.Run(run);
 // access each sample individually
 var parameterSamples = new List<IModelParameter>
 {
-	samples.Get<ModelParameter>(alphaMonitor),
-	samples.Get<ModelParameter>(betaMonitor)
+	samples.Get<ModelParameterVector>(yMonitor)
 };
 
 parameterSamples.ForEach(p => 
 	Debug.WriteLine("{0}: Mean: {1}, Std: {2}", p.ParameterName, p.Statistics.Mean, p.Statistics.StandardDeviation));
 ```
 
-Outputs
+Output
 
 ```
-a: Mean: -1.27493863785, Std: 100.421535452004
-b: Mean: 1.189023323, Std: 98.5209869502626
+y: Mean: -274.045177465289, Std: 58547.0020677397
 ```
