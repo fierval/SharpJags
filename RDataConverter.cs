@@ -62,7 +62,7 @@ namespace SharpJags
 
 			for (var i = 0; i < vector.Length; i++)
 			{
-				sb.Append(ConvertSimpleValue(vector[i]));
+				sb.Append(ConvertSimpleValue(vector.Get(i)));
 				if (i != (vector.Length - 1))
 					sb.Append(",");
 			}

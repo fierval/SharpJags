@@ -1,78 +1,80 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace SharpJags.Math
 {
-	public class Matrix<T> : IEnumerable
+	public class Matrix<T>
 	{
-		private List<Vector<T>> _backingStorage;
-
 		public int Rows { get; private set; }
 		public int Cols { get; private set; }
 
-		public Matrix()
-		{
-			Initialize(0, 0);
-		}
+		private T[,] _storage;
 
 		public Matrix(int rows, int cols)
 		{
-			Initialize(rows, cols);
+			Initialize(new T[rows, cols]);
 			Fill(default(T));
 		}
 
-		public Matrix(int rows, int cols, T defaultValue)
+		public Matrix(T[,] arr)
 		{
-			Initialize(rows, cols);
-			Fill(defaultValue);
-		}
+			Initialize(arr);
+		} 
 
-		private void Initialize(int rows, int cols)
+		private void Initialize(T[,] storage)
 		{
-			Rows = rows;
-			Cols = cols;
-			_backingStorage = new List<Vector<T>>(rows);
+			_storage = storage;
+			
+			Rows = _storage.GetLength(0);
+			Cols = _storage.GetLength(1);
 		}
 
 		private void Fill(T defaultValue)
 		{
 			for (var i = 0; i < Rows; i++)
 			{
-				_backingStorage.Add(new Vector<T>(Cols, defaultValue));
+				for (var j = 0; j < Cols; j++)
+				{
+					_storage[i, j] = defaultValue;
+				}
 			}
 		}
 
-		public Vector<T> this[int row]
+		public Vector<T> Row(int index)
 		{
-			get { return _backingStorage[row]; }
+			var vector = new T[Cols];
+			for (var i = 0; i < Cols; i++)
+			{
+				vector[i] = _storage[index, i];
+			}
+
+			return vector;
+		}
+
+		public Vector<T> Col(int index)
+		{
+			var vector = new T[Rows];
+			for (var i = 0; i < Rows; i++)
+			{
+				vector[i] = _storage[i, index];
+			}
+
+			return vector;
 		}
 
 		public Vector<T> ToColumnVector()
 		{
-			return new Vector<T>(_backingStorage
-				.SelectMany(v => v.ToList())
-				.ToList());
+			var vector = new List<T>();
+			for (var i = 0; i < Rows; i++)
+			{
+				vector.AddRange(Row(i).AsEnumerable());
+			}
+
+			return vector.ToArray();
 		}
 
-		public void Add(IEnumerable<T> enumerable)
+		public static implicit operator Matrix<T>(T[,] arr)
 		{
-			var vector = new Vector<T>(enumerable);
-			
-			if (Cols == 0)
-				Cols = vector.Length;
-			
-			if(vector.Length != Cols)
-				throw new ArgumentException("Dimension mismatch.");
-			
-			_backingStorage.Add(vector);
-			Rows++;
-		}
-
-		public IEnumerator GetEnumerator()
-		{
-			return _backingStorage.GetEnumerator();
+			return arr == null ? null : new Matrix<T>(arr);
 		}
 	}
 }

@@ -1,74 +1,52 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace SharpJags.Math
 {
-	public class Vector<T> : IEnumerable
+	public class Vector<T>
 	{
-		private List<T> _backingStorage;
+		private T[] _storage;
 
 		public int Length { get; private set; }
 
-		public Vector()
-		{
-			Initialize(0);
-		}
-
 		public Vector(int length)
 		{
-			Initialize(length);
+			Initialize(new T[length]);
 			Fill(default(T));
 		}
 			
-		public Vector(int length, T defaultValue)
+		public Vector(T[] arr)
 		{
-			Initialize(length);
-			Fill(defaultValue);
+			Initialize(arr);
 		}
 
-		public Vector(IEnumerable<T> enumerable)
+		private void Initialize(T[] storage)
 		{
-			var list = enumerable.ToList();
-			
-			_backingStorage = list;
-			Length = list.Count;
-		}
+			_storage = storage;
 
-		private void Initialize(int length)
-		{
-			_backingStorage = new List<T>();
-			Length = length;
+			Length = _storage.GetLength(0);
 		}
 
 		private void Fill(T defaultValue)
 		{
 			for (var i = 0; i < Length; i++)
 			{
-				_backingStorage.Add(defaultValue);
+				_storage[i] = defaultValue;
 			}
 		}
 
-		public List<T> ToList()
+		public T Get(int index)
 		{
-			return _backingStorage.ToList();
+			return _storage[index];
 		}
 
-		public T this[int column]
+		public IEnumerable<T> AsEnumerable()
 		{
-			get { return _backingStorage[column]; }
-			set { _backingStorage[column] = value; }
+			return _storage;
 		}
 
-		public void Add(T data)
+		public static implicit operator Vector<T>(T[] arr)
 		{
-			_backingStorage.Add(data);
-			Length++;
-		}
-
-		public IEnumerator GetEnumerator()
-		{
-			return _backingStorage.GetEnumerator();
+			return arr == null ? null : new Vector<T>(arr);
 		}
 	}
 }

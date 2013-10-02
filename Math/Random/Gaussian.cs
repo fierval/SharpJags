@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SharpJags.Math.Random
+﻿namespace SharpJags.Math.Random
 {
 	public class Gaussian : IDistribution
 	{
@@ -33,7 +31,7 @@ namespace SharpJags.Math.Random
 				y = 2.0 * _rng.NextDouble() - 1.0;
 				sqr = x * x + y * y;
 			}
-			while (sqr > 1.0 || sqr == 0);
+			while (sqr > 1.0 || System.Math.Abs(sqr) < 0.0001);
 
 			var fac = System.Math.Sqrt(-2.0 * System.Math.Log(sqr) / sqr);
 

@@ -70,7 +70,7 @@ namespace SharpJags
 
 			for (var i = 0; i < vector.Length; i++)
 			{
-				sb.Append(ConvertSimpleValue(vector[i]));
+				sb.Append(ConvertSimpleValue(vector.Get(i)));
 				if (i != (vector.Length - 1))
 					sb.Append(",");
 			}
@@ -86,7 +86,7 @@ namespace SharpJags
 
 			for (var i = 0; i < matrix.Rows; i++)
 			{
-				sb.Append(ConvertVector(matrix[i], true));
+				sb.Append(ConvertVector(matrix.Row(i), true));
 				if (i != (matrix.Rows - 1))
 					sb.Append(";");
 			}

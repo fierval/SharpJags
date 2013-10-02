@@ -21,46 +21,28 @@ The library is ready to be experimented with, but bugs must be accounted for. Ch
 ``` csharp
 JagsConfig.BinPath = @"C:\Program Files\JAGS\JAGS-3.3.0\x64\bin";
 
-var fooMatrix = new Matrix<double>
+Matrix<double> fooMatrix = new double[,]
 {
-	new double[]
-	{
-		1,
-		2,
-		3
-	},
-	new double[]
-	{
-		4,
-		5,
-		6
-	},
-	new double[]
-	{
-		7,
-		8,
-		9
-	}
+	{ 1, 2, 3 },
+	{ 4, 5, 6 },
+	{ 7, 8, 9 }
 };
 
 var n = 1000;
-var x = new Vector<double>(
-	Enumerable.Range(0, n)
-	.ToList()
-	.ConvertAll(i => (double)i));
+
+Vector<double> x = Enumerable.Range(0, n)
+	.ToList().ConvertAll(i => (double) i).ToArray();
 
 // SharpJags contains utilities for generating sets of random numbers -
 // either normally or uniformly distributed. This is nice for simulating the
 // uncertainty of the input data.
 // new Gaussian(0, 1).Generate(n) - Generate n numbers drawn from the normal distribution with mean=0 and standard deviation=1 (standard normal)
 // new Uniform(-1, 1).Generate(n) - Generate n numbers drawn from the uniform distribution that is defined by [min, max]
-var epsilon = new Vector<double>(
-	new Gaussian(0, 1)
-		.Generate(n));
+Vector<double> epsilon = new Gaussian(0, 1)
+	.Generate(n).ToArray();
 
-var delta = new Vector<double>(
-	new Uniform(-1, 1)
-		.Generate(n));
+Vector<double> delta = new Uniform(-1, 1)
+	.Generate(n).ToArray();
 
 var data = new JagsData
 {
@@ -80,7 +62,7 @@ var modelDefintion = new ModelDefinition
 				y[i] ~ dnorm(y.hat[i], tau)
 				y.hat[i] <- a + b * x[i]
 			}
-			
+
 			a ~ dnorm(0, .0001)
 			b ~ dnorm(0, .0001)
 			tau <- pow(sigma, -2)
@@ -123,8 +105,9 @@ var parameterSamples = new List<IModelParameter>
 	samples.Get<ModelParameterVector>(yMonitor)
 };
 
-parameterSamples.ForEach(p => 
-	Debug.WriteLine("{0}: Mean: {1}, Std: {2}", p.ParameterName, p.Statistics.Mean, p.Statistics.StandardDeviation));
+parameterSamples.ForEach(p =>
+	Debug.WriteLine("{0}: Mean: {1}, Std: {2}", 
+		p.ParameterName, p.Statistics.Mean, p.Statistics.StandardDeviation));
 ```
 
 Output

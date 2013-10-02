@@ -101,7 +101,7 @@ namespace SharpJags.CodaParser
 					parameterName = parameterIdentifier;
 					if (!parameters.ContainsKey(parameterName))
 					{
-						var param = new ModelParameter()
+						var param = new ModelParameter
 						{
 							ParameterName = parameterName
 						};
