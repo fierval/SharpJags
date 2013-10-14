@@ -6,6 +6,12 @@ The wrapper is fully functional and comes with handy utilities for calculating t
 several chains in parallel. The wrapper takes care of formatting the input data (R-format), running JAGS and parsing the resulting samples. Beware however this
 is not yet production quality code.
 
+#### 0.1.1 Release
+
+* Improved Vector<T> and Matrix<T> classes so to appear less verbose
+* General refactoring
+* Created nuget package
+
 #### 0.1.0 Release
 
 The library is ready to be experimented with, but bugs must be accounted for. Changes since initial commit:
