@@ -11,6 +11,7 @@ is not yet production quality code.
 * Improved Vector<T> and Matrix<T> classes so to appear less verbose
 * General refactoring
 * Created nuget package
+* Updated example
 
 #### 0.1.0 Release
 
