@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpJags.Math;
 
-namespace SharpJags.CodaParser
+namespace SharpJags.Parsing
 {
 	public class ModelParameter : IModelParameter
 	{
-		public String ParameterName { get; set; }
-
+		public string ParameterName { get; set; }
 		public readonly List<ModelChain> Chains = new List<ModelChain>();
 
 		public List<Double> Samples

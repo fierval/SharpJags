@@ -2,92 +2,72 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
+using System.Linq;
+using SharpJags.Jags;
 
 namespace SharpJags.Processes
 {
-	public class ProcessRunner : IDisposable
+	public class ProcessRunner : IProcessRunner
 	{
-		private readonly Process _process;
-		private readonly FileInfo _fileArgument;
-		private readonly Dictionary<String, String> _arguments;
+		private readonly FileInfo _processPath;
 
-		public ProcessRunner(FileSystemInfo processPath, FileInfo fileArgument, Dictionary<String, String> arguments = null)
+		public ProcessRunner(FileInfo processPath)
 		{
-			_arguments = arguments;
-			_fileArgument = fileArgument;
-			_process = new Process
+			_processPath = processPath;
+		}
+
+		private string BuildArgumentString(IEnumerable<IProcessArgument> arguments)
+		{
+			return arguments == null ? String.Empty : String.Join(" ", arguments.Select(a => a.ToFormattedString())).Trim();
+		}
+
+		public ProcessResult Run(IEnumerable<IProcessArgument> arguments, string workingDirectory = null)
+		{
+			if (!String.IsNullOrEmpty(workingDirectory))
+			{
+				Directory.SetCurrentDirectory(workingDirectory);	
+			}
+			
+			var process = new Process
 			{
 				StartInfo = new ProcessStartInfo
 				{
-					FileName = processPath.FullName,
-					Arguments = ExtractArguments(),
+					FileName = _processPath.FullName,
+					Arguments = BuildArgumentString(arguments),
+					CreateNoWindow = true,
 					UseShellExecute = false,
-					RedirectStandardOutput = true,
 					RedirectStandardError = true,
-					CreateNoWindow = true
+					RedirectStandardOutput = true
 				}
 			};
-		}
 
-		private String ExtractArguments()
-		{
-			var args = new StringBuilder();
-			if (_fileArgument != null)
-				args.Append(_fileArgument.Name).Append(" ");
+			string result;
+			string errors;
 
-			if (_arguments != null)
+			try
 			{
-				var c = 0;
-				foreach (var kv in _arguments)
-				{
-					var val = kv.Value;
-					if (val.IndexOf(" ", StringComparison.Ordinal) != -1) val = "\"" + val + "\"";
-					args.AppendFormat("--{0}={1}", kv.Key, val);
-					if (c != (_arguments.Count - 1))
-						args.Append(" ");
-					c++;
-				}
+				process.Start();
+
+				result = process.StandardOutput.ReadToEnd();
+				errors = process.StandardError.ReadToEnd();
+
+				process.WaitForExit();
 			}
-
-			return args.ToString();
-		}
-
-		public ProcessResult Run()
-		{
-			if (_fileArgument.Directory != null) Directory.SetCurrentDirectory(_fileArgument.Directory.FullName);
-
-			_process.Start();
-
-			var result = _process.StandardOutput.ReadToEnd();
-			var errors = _process.StandardError.ReadToEnd();
-
-			_process.WaitForExit();
+			catch (Exception e)
+			{
+				throw new ProcessRunnerException(
+					String.Format("The process exited unexpectedely with message: {0}", e.Message));
+			}
+			finally
+			{
+				process.Dispose();
+			}
 
 			return new ProcessResult
 			{
 				Output = result,
 				Errors = errors
 			};
-		}
-
-		~ProcessRunner()
-		{
-			Dispose(false);
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		private void Dispose(bool disposing)
-		{
-			if (!disposing) return;
-			_process.Close();
-			_process.Kill();
-			_process.Dispose();
 		}
 	}
 }

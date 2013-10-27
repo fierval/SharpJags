@@ -1,4 +1,4 @@
-﻿namespace SharpJags
+﻿namespace SharpJags.Jags
 {
 	public class MCMCParameters
 	{

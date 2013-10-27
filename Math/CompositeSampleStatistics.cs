@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpJags.CodaParser;
+using SharpJags.Parsing;
 
 namespace SharpJags.Math
 {

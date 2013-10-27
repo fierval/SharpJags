@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using SharpJags.Math;
 
-namespace SharpJags.CodaParser
+namespace SharpJags.Parsing
 {
 	public class ModelChain
 	{
-		public readonly List<Double> Samples = new List<Double>();
+		public readonly List<double> Samples = new List<double>();
 
 		private SampleStatistics _statistics;
 		public SampleStatistics Statistics

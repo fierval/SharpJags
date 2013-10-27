@@ -1,22 +1,31 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using SharpJags.Collections;
 
-namespace SharpJags.CodaParser
+namespace SharpJags.Parsing.Coda
 {
-	public class Parser
+	public class CodaParser : ISampleParser
 	{
+		private readonly ISampleReader _sampleReader;
 		private List<String> _parameterIndex; 
 		private List<List<String>> _codaChains;
 		
 		private const String IsMatrix = @"([A-Za-z0-9_]+)\[([0-9]+),([0-9]+)\]$";
 		private const String IsVector = @"([A-Za-z0-9_]+)\[([0-9]+)\]$";
 
-		public SampleCollection Parse(CodaData data)
+		public CodaParser(ISampleReader sampleReader)
 		{
+			_sampleReader = sampleReader;
+		}
+
+		public SampleCollection Parse(string rootPath, string indexFileName, string chainFileNameTemplate, int numChains)
+		{
+			var data = _sampleReader.Read(rootPath, indexFileName, chainFileNameTemplate, numChains);
+			
 			_parameterIndex = data.Index;
 			_codaChains = data.Chains;
 

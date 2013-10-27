@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using SharpJags.DataFormatters;
 
-namespace SharpJags
+namespace SharpJags.Jags
 {
 	public class JagsData : IEnumerable
 	{
 		private readonly Dictionary<String, Object> _storage;
+		private readonly List<IDataFormatter> _outputFormatters;
 
-		public JagsData()
+		public JagsData(IEnumerable<IDataFormatter> outputFormatters = null)
 		{
 			_storage = new Dictionary<String, Object>();
-		}
+			
+			_outputFormatters = new List<IDataFormatter>
+			{
+				new RFormatter()
+			};
 
-		public String DumpR()
-		{
-			return RDataConverter.Dump(_storage);
-		}
-
-		public String DumpMatlab() 
-		{
-			return MatlabDataConverter.Dump(_storage);
+			if (outputFormatters != null)
+			{
+				_outputFormatters = _outputFormatters.Union(outputFormatters).ToList();
+			}
 		}
 
 		public Object this[String key]
@@ -44,9 +47,14 @@ namespace SharpJags
 			return _storage.GetEnumerator();
 		}
 
-		public void Add(String key, Object data)
+		public void Add(string key, object data)
 		{
 			_storage.Add(key, data);
+		}
+
+		public IEnumerable<FormattedData> GetFormattedData()
+		{
+			return _outputFormatters.Select(formatter => formatter.Format(_storage));
 		}
 	}
 }

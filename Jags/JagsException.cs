@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpJags
+namespace SharpJags.Jags
 {
 	[Serializable]
 	public class JagsException : Exception

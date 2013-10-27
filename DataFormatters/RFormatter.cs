@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Text;
 using SharpJags.Math;
 
-namespace SharpJags
+namespace SharpJags.DataFormatters
 {
-	public static class RDataConverter
+	public class RFormatter : IDataFormatter
 	{
-		public static String Dump(Dictionary<String, Object> data)
+		public FormattedData Format(Dictionary<string, object> data)
 		{
 			var sb = new StringBuilder();
 			foreach (var pair in data)
@@ -23,15 +23,19 @@ namespace SharpJags
 				}
 			}
 
-			return sb.ToString();
+			return new FormattedData
+			{
+				FileExtension = "r",
+				Data = sb.ToString()
+			};
 		}
 
-		private static String Comment(String comment)
+		private string Comment(string comment)
 		{
 			return comment;
 		}
 		
-		private static String Declare(String identifier, Object value)
+		private string Declare(string identifier, object value)
 		{
 			var sb = new StringBuilder(identifier + " <- ");
 
@@ -42,7 +46,7 @@ namespace SharpJags
 			return sb.ToString();
 		}
 		
-		private static String ConvertSimpleValue(Object value) {
+		private string ConvertSimpleValue(object value) {
 			if(value is Double) 
 			{
 				var val = (double)value;
@@ -56,7 +60,7 @@ namespace SharpJags
 			return "'" + (value as String) + "'";
 		}
 		
-		private static String ConvertVector(Vector<double> vector)
+		private string ConvertVector(Vector<double> vector)
 		{
 			var sb = new StringBuilder("c(");
 
@@ -72,15 +76,12 @@ namespace SharpJags
 			return sb.ToString();
 		}
 
-		private static String ConvertMatrix(Matrix<double> matrix)
+		private string ConvertMatrix(Matrix<double> matrix)
 		{
 			var sb = new StringBuilder("structure(")
 			
-			.Append(
-				ConvertVector(
-						matrix.ToColumnVector()
-				)
-			)
+			.Append(ConvertVector(
+						matrix.ToColumnVector()))
 
 			.Append(", ")
 			.Append(".Dim=c(" + matrix.Rows + "," + matrix.Cols + ")")

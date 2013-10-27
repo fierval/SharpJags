@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace SharpJags.Processes
+﻿namespace SharpJags.Processes
 {
 	public class ProcessResult
 	{
-		public String Output { get; set; }
-		public String Errors { get; set; }
+		public string Output { get; set; }
+		public string Errors { get; set; }
 	}
 }

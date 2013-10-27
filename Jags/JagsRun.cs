@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using SharpJags.Models;
+using SharpJags.Sanitazion;
 
-namespace SharpJags
+namespace SharpJags.Jags
 {
 	public class JagsRun
 	{
-		public FileSystemInfo WorkingDirectory { get; set; }
+		public string WorkingDirectory { get; set; }
 		public MCMCParameters Parameters { get; set; }
 		public ModelDefinition ModelDefinition { get; set; }
 		public JagsData ModelData { get; set; }
 		public JagsData ModelPriors { get; set; }
-		public List<JagsMonitor> Monitors { get; set; }
+		public IEnumerable<JagsMonitor> Monitors { get; set; }
+		public IOutputSanitizer OutputSanitizer { get; set; }
 	}
 }

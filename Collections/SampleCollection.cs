@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using SharpJags.CodaParser;
+using System.Linq;
+using SharpJags.Jags;
+using SharpJags.Parsing;
 
-namespace SharpJags
+namespace SharpJags.Collections
 {
 	public class SampleCollection
 	{
@@ -17,9 +18,7 @@ namespace SharpJags
 
 		public IList<IModelParameter> All()
 		{
-			return _sampleDictionary
-				.Select(s => s.Value)
-					.ToList();
+			return _sampleDictionary.Select(s => s.Value).ToList();
 		}
 
 		public T Get<T>(JagsMonitor monitor) where T : class, IModelParameter
@@ -30,8 +29,11 @@ namespace SharpJags
 			var parameter = _sampleDictionary[monitor.ParameterName];
 			var returnParameter = parameter as T;
 
-			if(returnParameter == null)
-				throw new InvalidDataException("The model parameter is found, but is not of the specified type. Correct type is: " + parameter.GetType());
+			if (returnParameter == null)
+			{
+				throw new InvalidDataException(
+					"The model parameter is found, but is not of the specified type. Correct type is: " + parameter.GetType());
+			}
 
 			return returnParameter;
 		}

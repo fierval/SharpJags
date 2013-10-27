@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpJags.Math;
 
-namespace SharpJags.CodaParser
+namespace SharpJags.Parsing
 {
 	public interface IModelParameter
 	{

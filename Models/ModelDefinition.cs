@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpJags
+namespace SharpJags.Models
 {
 	public class ModelDefinition
 	{
