@@ -6,14 +6,26 @@ The wrapper is fully functional and comes with handy utilities for calculating t
 several chains in parallel. The wrapper takes care of formatting the input data (R-format), running JAGS and parsing the resulting samples. Beware however this
 is not yet production quality code.
 
-#### 0.1.1 Release
+Change log:
+
+#### 1.0.0 Release
+
+* Worked out a few final quirks (Matrix<T> and Vector<T> were involuntarily immutable - WTF?)
+* One is now able to get associated samples from SampleCollection without having to pass the actual JagsMonitor-object.
+
+#### 0.1.2 Pre-Release
+
+* Heavy refactoring and improvements of code quality (abstractions)
+* Improvements in ProcessRunner
+
+#### 0.1.1 Pre-Release
 
 * Improved Vector<T> and Matrix<T> classes so to appear less verbose
 * General refactoring
 * Created nuget package
 * Updated example
 
-#### 0.1.0 Release
+#### 0.1.0 Pre-Release
 
 The library is ready to be experimented with, but bugs must be accounted for. Changes since initial commit:
 
