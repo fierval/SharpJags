@@ -39,6 +39,29 @@ namespace SharpJags.Math
 			}
 		}
 
+		public T Get(int y, int x)
+		{
+			return _storage[y, x];
+		}
+
+		public void Set(int y, int x, T value)
+		{
+			_storage[y, x] = value;
+		}
+
+		public T this[int y, int x]
+		{
+			get
+			{
+				return Get(y, x);
+			}
+
+			set
+			{
+				Set(y, x, value);
+			}
+		}
+
 		public Vector<T> Row(int index)
 		{
 			var vector = new T[Cols];

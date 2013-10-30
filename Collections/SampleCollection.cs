@@ -21,12 +21,12 @@ namespace SharpJags.Collections
 			return _sampleDictionary.Select(s => s.Value).ToList();
 		}
 
-		public T Get<T>(JagsMonitor monitor) where T : class, IModelParameter
+		public T Get<T>(string parameterName) where T : class, IModelParameter
 		{
-			if (!_sampleDictionary.ContainsKey(monitor.ParameterName))
+			if (!_sampleDictionary.ContainsKey(parameterName))
 				throw new KeyNotFoundException("Model parameter not found. Be sure to create a monitor for it.");
 
-			var parameter = _sampleDictionary[monitor.ParameterName];
+			var parameter = _sampleDictionary[parameterName];
 			var returnParameter = parameter as T;
 
 			if (returnParameter == null)
@@ -36,6 +36,11 @@ namespace SharpJags.Collections
 			}
 
 			return returnParameter;
+		}
+
+		public T Get<T>(JagsMonitor monitor) where T : class, IModelParameter
+		{
+			return Get<T>(monitor.ParameterName);
 		}
 	}
 }

@@ -84,7 +84,7 @@ namespace SharpJags.DataFormatters
 						matrix.ToColumnVector()))
 
 			.Append(", ")
-			.Append(".Dim=c(" + matrix.Rows + "," + matrix.Cols + ")")
+			.Append(".Dim=c(" + matrix.Cols + "," + matrix.Rows + ")")
 			.Append(")");
 
 			return sb.ToString();

@@ -160,7 +160,7 @@ namespace SharpJags.Jags
 
 				var isJagsError =
 					!String.IsNullOrWhiteSpace(result.Errors)
-					&& (new[] { "error", "failed", "unable" })
+					&& (new[] { "error", "failed", "unable", "nothing to compile" })
 						.Any(s => result.Errors.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) != -1);
 
 				if (isJagsError)

@@ -46,7 +46,6 @@
     <Compile Include="Parsing\SampleData.cs" />
     <Compile Include="Sanitazion\IOutputSanitizer.cs" />
     <Compile Include="DataFormatters\FormattedData.cs" />
-    <Compile Include="Jags\IDataParser.cs" />
     <Compile Include="Jags\JagsResourceFile.cs" />
     <Compile Include="Sanitazion\OutputSanitizer.cs" />
     <Compile Include="Math\CompositeSampleStatistics.cs" />

@@ -34,9 +34,27 @@ namespace SharpJags.Math
 			}
 		}
 
-		public T Get(int index)
+		public T Get(int x)
 		{
-			return _storage[index];
+			return _storage[x];
+		}
+
+		public void Set(int x, T value)
+		{
+			_storage[x] = value;
+		}
+
+		public T this[int x]
+		{
+			get
+			{
+				return Get(x);
+			}
+
+			set
+			{
+				Set(x, value);
+			}
 		}
 
 		public IEnumerable<T> AsEnumerable()
